@@ -1,0 +1,380 @@
+/* ============================================================
+   CurrenSee — Design Tokens
+   Aesthetic: dark luxury trading desk
+   ============================================================ */
+
+/* Using system Arial / Helvetica throughout for a bold, utility-first aesthetic */
+
+:root {
+  /* ── Surfaces (deep night-navy stack) ── */
+  --bg:         #07091A;   /* root */
+  --bg-2:       #0B0F22;   /* elevated 1 */
+  --surface:    #11162C;   /* card */
+  --surface-2:  #171D38;   /* nested card */
+  --surface-3:  #1E2643;   /* hover */
+  --hairline:   rgba(255,255,255,0.06);
+  --hairline-2: rgba(255,255,255,0.12);
+
+  /* ── Ink (warm off-white range) ── */
+  --ink:        #ECE6D6;   /* primary text */
+  --ink-2:      #B6B0A0;   /* secondary */
+  --ink-3:      #7A7668;   /* tertiary */
+  --ink-4:      #4A4A52;   /* disabled */
+
+  /* ── Gold (signature accent) ── */
+  --gold:       #C9A961;
+  --gold-soft:  #E8C97A;
+  --gold-deep:  #8E7438;
+  --gold-glow:  rgba(201,169,97,0.18);
+
+  /* ── Semantic ── */
+  --positive:   #5EBA86;
+  --negative:   #D86C5C;
+  --positive-soft: rgba(94,186,134,0.14);
+  --negative-soft: rgba(216,108,92,0.14);
+
+  /* ── Type ── */
+  --f-display: 'Arial Black', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --f-sans:    Arial, 'Helvetica Neue', Helvetica, sans-serif;
+  --f-mono:    'Helvetica Neue', Arial, sans-serif;
+
+  /* ── Radius ── */
+  --r-xs: 6px;
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+
+  /* ── Spacing (8pt grid) ── */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 20px;
+  --s-6: 24px;
+  --s-7: 32px;
+  --s-8: 40px;
+  --s-9: 56px;
+
+  /* ── Shadows ── */
+  --shadow-card:  0 1px 0 rgba(255,255,255,0.04) inset, 0 8px 24px rgba(0,0,0,0.35);
+  --shadow-gold:  0 0 0 1px rgba(201,169,97,0.35), 0 8px 30px rgba(201,169,97,0.18);
+  --shadow-lift:  0 18px 50px rgba(0,0,0,0.5);
+}
+
+/* Light theme override */
+[data-theme="light"] {
+  --bg:         #F4F1E8;
+  --bg-2:       #EDE8DA;
+  --surface:    #FFFFFF;
+  --surface-2:  #F7F2E5;
+  --surface-3:  #EFE9D8;
+  --hairline:   rgba(20,18,10,0.08);
+  --hairline-2: rgba(20,18,10,0.16);
+  --ink:        #1A1B2E;
+  --ink-2:      #5A5849;
+  --ink-3:      #8A8676;
+  --ink-4:      #C5C0AE;
+  --gold:       #8E7438;
+  --gold-soft:  #B79447;
+  --gold-deep:  #6A572A;
+  --gold-glow:  rgba(142,116,56,0.16);
+  --shadow-card: 0 1px 0 rgba(255,255,255,0.5) inset, 0 4px 18px rgba(20,18,10,0.08);
+  --shadow-lift: 0 18px 50px rgba(20,18,10,0.18);
+}
+
+/* Compact density */
+[data-density="compact"] {
+  --s-3: 8px;
+  --s-4: 12px;
+  --s-5: 14px;
+  --s-6: 18px;
+  --s-7: 22px;
+}
+
+/* ── Base ── */
+.cs-app, .cs-app * {
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.cs-app {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--f-sans);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle textured background — radial vignette + grain */
+.cs-app::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(120% 70% at 50% -10%, rgba(201,169,97,0.08), transparent 55%),
+    radial-gradient(80% 50% at 50% 110%, rgba(30,38,67,0.7), transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+[data-theme="light"] .cs-app::before {
+  background:
+    radial-gradient(120% 70% at 50% -10%, rgba(142,116,56,0.08), transparent 55%),
+    radial-gradient(80% 50% at 50% 110%, rgba(237,232,218,0.9), transparent 60%);
+}
+
+.cs-app > * { position: relative; z-index: 1; }
+
+/* Hide scrollbars inside the phone */
+.cs-app ::-webkit-scrollbar { display: none; }
+.cs-app * { scrollbar-width: none; }
+
+/* ── Type system ── */
+.cs-display {
+  font-family: var(--f-display);
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  line-height: 0.95;
+}
+.cs-mono {
+  font-family: var(--f-mono);
+  font-feature-settings: 'tnum' 1;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.cs-eyebrow {
+  font-family: var(--f-sans);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.cs-label {
+  font-family: var(--f-sans);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+/* Catch-all: any inline-styled element using our display/mono vars gets the right weight automatically */
+.cs-app [style*="f-display"] {
+  font-weight: 900;
+  letter-spacing: -0.035em !important;
+}
+.cs-app [style*="f-mono"] {
+  font-weight: 700;
+}
+/* And italic emphasis in display contexts: bolder, slightly slanted */
+.cs-app [style*="f-display"] em,
+.cs-app .cs-display em {
+  font-style: italic;
+  font-weight: 900;
+}
+
+/* Hairline divider */
+.cs-hr {
+  height: 1px;
+  background: var(--hairline);
+  border: 0;
+  margin: 0;
+}
+
+/* Buttons */
+.cs-btn {
+  appearance: none;
+  border: 0;
+  cursor: pointer;
+  font-family: var(--f-sans);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  padding: 14px 22px;
+  border-radius: var(--r-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: transform .12s ease, background .15s ease, box-shadow .15s ease;
+  white-space: nowrap;
+}
+.cs-btn:active { transform: translateY(1px); }
+
+.cs-btn-primary {
+  background: linear-gradient(180deg, var(--gold-soft) 0%, var(--gold) 100%);
+  color: #0A0E1A;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.35) inset,
+    0 -1px 0 rgba(0,0,0,0.18) inset,
+    0 10px 24px -10px rgba(201,169,97,0.6);
+}
+.cs-btn-primary:hover { filter: brightness(1.05); }
+
+.cs-btn-ghost {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--hairline-2);
+}
+.cs-btn-ghost:hover { background: var(--surface-2); }
+
+.cs-btn-text {
+  background: transparent;
+  color: var(--gold);
+  padding: 6px 4px;
+}
+
+/* Inputs */
+.cs-input {
+  appearance: none;
+  width: 100%;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-sm);
+  padding: 16px 16px;
+  font-family: var(--f-sans);
+  font-size: 15px;
+  font-weight: 700;
+  outline: none;
+  transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+}
+.cs-input::placeholder { color: var(--ink-3); }
+.cs-input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px var(--gold-glow);
+}
+
+/* Card */
+.cs-card {
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-card);
+}
+
+/* Chip / pill */
+.cs-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  font-family: var(--f-sans);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: 100px;
+  background: var(--surface-2);
+  color: var(--ink-2);
+  border: 1px solid var(--hairline);
+}
+.cs-chip-gold {
+  color: var(--gold);
+  background: var(--gold-glow);
+  border-color: rgba(201,169,97,0.3);
+}
+.cs-chip-pos { color: var(--positive); background: var(--positive-soft); border-color: rgba(94,186,134,0.3); }
+.cs-chip-neg { color: var(--negative); background: var(--negative-soft); border-color: rgba(216,108,92,0.3); }
+
+/* Tab bar (bottom nav) */
+.cs-tabbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background: var(--bg-2);
+  border-top: 1px solid var(--hairline);
+  padding: 8px 8px 6px;
+  position: relative;
+}
+.cs-tabbar::before {
+  content: '';
+  position: absolute;
+  left: 50%; top: 0;
+  transform: translateX(-50%);
+  width: 36px; height: 1px;
+  background: var(--gold);
+  opacity: .6;
+}
+
+/* List rows */
+.cs-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--hairline);
+}
+.cs-row:last-child { border-bottom: 0; }
+
+/* Sparkline path animation */
+@keyframes cs-stroke-in {
+  from { stroke-dashoffset: 1000; }
+  to   { stroke-dashoffset: 0; }
+}
+.cs-spark-path {
+  stroke-dasharray: 1000;
+  animation: cs-stroke-in 1.6s ease-out forwards;
+}
+
+/* Subtle count-up shimmer */
+@keyframes cs-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.cs-shimmer {
+  background: linear-gradient(90deg, var(--ink) 0%, var(--gold-soft) 50%, var(--ink) 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: cs-shimmer 2.4s ease-in-out infinite;
+}
+
+/* Fade-in */
+@keyframes cs-fade-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.cs-enter { animation: cs-fade-up .5s cubic-bezier(.2,.7,.3,1) both; }
+
+/* Top status bar inside app (the gold ticker stripe) */
+.cs-ticker {
+  display: flex;
+  gap: 24px;
+  padding: 6px 16px;
+  background: linear-gradient(180deg, rgba(201,169,97,0.06) 0%, transparent 100%);
+  border-bottom: 1px solid var(--hairline);
+  overflow: hidden;
+  font-family: var(--f-sans);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+@keyframes cs-ticker-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.cs-ticker-track {
+  display: flex; gap: 24px;
+  animation: cs-ticker-scroll 40s linear infinite;
+  flex-shrink: 0;
+}
+.cs-ticker .pos { color: var(--positive); }
+.cs-ticker .neg { color: var(--negative); }
+
+/* Number flip on convert */
+@keyframes cs-flip-in {
+  from { opacity: 0; transform: translateY(12px) scale(.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.cs-flip { animation: cs-flip-in .45s cubic-bezier(.2,.7,.3,1) both; }

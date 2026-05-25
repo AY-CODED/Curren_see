@@ -1,0 +1,33 @@
+name: curren_see
+description: "CurrenSee - Know what your money is worth instantly."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.8.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  firebase_core: ^3.12.1
+  firebase_auth: ^5.5.1
+  cloud_firestore: ^5.6.5
+  flutter_riverpod: ^2.6.1
+  riverpod_annotation: ^2.6.1
+  dio: ^5.7.0
+  intl: ^0.20.2
+  go_router: ^15.1.2
+  shared_preferences: ^2.5.3
+  fl_chart: ^0.70.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  riverpod_generator: ^2.6.3
+  build_runner: ^2.4.14
+  json_serializable: ^6.9.4
+
+flutter:
+  uses-material-design: true
