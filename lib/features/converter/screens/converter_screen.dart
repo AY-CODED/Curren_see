@@ -512,8 +512,8 @@ class _SuccessOverlay extends StatelessWidget {
             right: 16,
             child: SafeArea(
               child: IconBtn(
-                child: const Icon(Icons.close_rounded),
                 onTap: onDone,
+                child: const Icon(Icons.close_rounded),
               ),
             ),
           ),
