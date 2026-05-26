@@ -14,6 +14,7 @@ class SplashScreen extends ConsumerStatefulWidget {
 class _SplashScreenState extends ConsumerState<SplashScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+  int _retries = 0;
 
   @override
   void initState() {
@@ -32,25 +33,37 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     await Future.delayed(const Duration(seconds: 2));
     if (!mounted) return;
 
-    final authState = ref.read(authStateProvider);
-    authState.when(
-      data: (user) {
-        if (user != null) {
-          Navigator.of(context).pushReplacementNamed('/home');
-        } else {
+    try {
+      final authState = ref.read(authStateProvider);
+      authState.when(
+        data: (user) {
+          if (user != null) {
+            Navigator.of(context).pushReplacementNamed('/home');
+          } else {
+            Navigator.of(context).pushReplacementNamed('/onboarding');
+          }
+        },
+        loading: () {
+          _retries++;
+          if (_retries > 4) {
+            // Firebase may not be configured — go to onboarding
+            Navigator.of(context).pushReplacementNamed('/onboarding');
+          } else {
+            Future.delayed(const Duration(milliseconds: 500), () {
+              if (mounted) _navigate();
+            });
+          }
+        },
+        error: (_, __) {
           Navigator.of(context).pushReplacementNamed('/onboarding');
-        }
-      },
-      loading: () {
-        // Wait for auth to resolve
-        Future.delayed(const Duration(milliseconds: 500), () {
-          if (mounted) _navigate();
-        });
-      },
-      error: (_, __) {
+        },
+      );
+    } catch (_) {
+      // Firebase not initialized — skip auth, go to onboarding
+      if (mounted) {
         Navigator.of(context).pushReplacementNamed('/onboarding');
-      },
-    );
+      }
+    }
   }
 
   @override
