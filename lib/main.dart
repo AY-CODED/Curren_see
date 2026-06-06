@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // Added this import
 import 'app.dart';
+import 'firebase_options.dart'; 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,13 +27,15 @@ void main() async {
   ));
 
   // Initialize Firebase
-  // NOTE: Run `flutterfire configure` to generate firebase_options.dart,
-  // then replace the block below with:
-  //   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   try {
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    
+    // Enable offline persistence globally
+    FirebaseFirestore.instance.settings = const Settings(persistenceEnabled: true);
   } catch (e) {
-    debugPrint('Firebase init skipped (not configured): $e');
+    debugPrint('Firebase init failed: $e');
   }
 
   runApp(

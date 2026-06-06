@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "849323926155",
+    "project_id": "currensee-backend-ce094",
+    "storage_bucket": "currensee-backend-ce094.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:849323926155:android:1ce49317067ddbb1b32a8e",
+        "android_client_info": {
+          "package_name": "com.example.curren_see"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "849323926155-m5kjvn20kadkgu6nq60r3jp9d4ic8hg7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCaqsnC-qJ8yOecvKUqv21B7ufISflcqkw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "849323926155-m5kjvn20kadkgu6nq60r3jp9d4ic8hg7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "849323926155-08aoj17d7r5vr2go8ab2e2044pjg7tsq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.currensee"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:849323926155:android:f5c28316615f14d8b32a8e",
+        "android_client_info": {
+          "package_name": "com.example.currensee"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "849323926155-m5kjvn20kadkgu6nq60r3jp9d4ic8hg7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCaqsnC-qJ8yOecvKUqv21B7ufISflcqkw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "849323926155-m5kjvn20kadkgu6nq60r3jp9d4ic8hg7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "849323926155-08aoj17d7r5vr2go8ab2e2044pjg7tsq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.currensee"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
