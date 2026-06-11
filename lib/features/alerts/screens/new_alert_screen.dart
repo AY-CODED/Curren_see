@@ -1,3 +1,4 @@
+import 'package:curren_see/features/alerts/screens/alerts_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
@@ -31,11 +32,17 @@ class _NewAlertScreenState extends ConsumerState<NewAlertScreen> {
 
   Future<void> _save() async {
     final user = ref.read(currentUserProvider);
-    if (user == null) return;
+    if (user == null) {
+      setState(() => _loading = false);
+      return;
+    }
 
     setState(() => _loading = true);
+
     try {
-      await ref.read(firestoreServiceProvider).addAlert(
+      await ref
+          .read(firestoreServiceProvider)
+          .addAlert(
             user.uid,
             RateAlert(
               baseCurrency: _from,
@@ -44,10 +51,20 @@ class _NewAlertScreenState extends ConsumerState<NewAlertScreen> {
               condition: _condition,
               createdAt: DateTime.now(),
             ),
+          )
+          .timeout(
+            const Duration(seconds: 8),
+            onTimeout: () {
+              throw Exception("Request timeout");
+            },
           );
-      if (mounted) Navigator.of(context).pop();
-    } catch (_) {
+    } catch (e) {
+      debugPrint("Save alert error: $e");
+    }
+
+    if (mounted) {
       setState(() => _loading = false);
+      Navigator.of(context).pushReplacementNamed('/alert-success');
     }
   }
 
@@ -55,10 +72,10 @@ class _NewAlertScreenState extends ConsumerState<NewAlertScreen> {
   Widget build(BuildContext context) {
     final rates = ref.watch(exchangeRatesProvider).value ?? {};
     final rateService = ref.read(exchangeRateServiceProvider);
-    final current =
-        rates.isNotEmpty ? rateService.getRate(_from, _to, rates) : 0.0;
-    final distance =
-        current > 0 ? ((_target - current) / current * 100) : 0.0;
+    final current = rates.isNotEmpty
+        ? rateService.getRate(_from, _to, rates)
+        : 0.0;
+    final distance = current > 0 ? ((_target - current) / current * 100) : 0.0;
 
     return Scaffold(
       backgroundColor: AppColors.bg,
@@ -70,8 +87,11 @@ class _NewAlertScreenState extends ConsumerState<NewAlertScreen> {
               eyebrow: "We'll watch for you",
               leading: GestureDetector(
                 onTap: () => Navigator.of(context).pop(),
-                child: const Icon(Icons.close_rounded,
-                    color: AppColors.ink2, size: 22),
+                child: const Icon(
+                  Icons.close_rounded,
+                  color: AppColors.ink2,
+                  size: 22,
+                ),
               ),
             ),
 
@@ -104,11 +124,14 @@ class _NewAlertScreenState extends ConsumerState<NewAlertScreen> {
                           GestureDetector(
                             onTap: () async {
                               final result = await Navigator.of(context)
-                                  .pushNamed('/currency-picker', arguments: {
-                                'kind': 'from',
-                                'from': _from,
-                                'to': _to,
-                              });
+                                  .pushNamed(
+                                    '/currency-picker',
+                                    arguments: {
+                                      'kind': 'from',
+                                      'from': _from,
+                                      'to': _to,
+                                    },
+                                  );
                               if (result is String) {
                                 setState(() => _from = result);
                               }
@@ -130,17 +153,23 @@ class _NewAlertScreenState extends ConsumerState<NewAlertScreen> {
                           ),
                           const Padding(
                             padding: EdgeInsets.symmetric(horizontal: 14),
-                            child: Icon(Icons.arrow_forward_ios_rounded,
-                                size: 14, color: AppColors.ink3),
+                            child: Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              size: 14,
+                              color: AppColors.ink3,
+                            ),
                           ),
                           GestureDetector(
                             onTap: () async {
                               final result = await Navigator.of(context)
-                                  .pushNamed('/currency-picker', arguments: {
-                                'kind': 'to',
-                                'from': _from,
-                                'to': _to,
-                              });
+                                  .pushNamed(
+                                    '/currency-picker',
+                                    arguments: {
+                                      'kind': 'to',
+                                      'from': _from,
+                                      'to': _to,
+                                    },
+                                  );
                               if (result is String) {
                                 setState(() => _to = result);
                               }
@@ -163,12 +192,13 @@ class _NewAlertScreenState extends ConsumerState<NewAlertScreen> {
                           const Spacer(),
                           Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 5),
+                              horizontal: 10,
+                              vertical: 5,
+                            ),
                             decoration: BoxDecoration(
                               color: AppColors.surface2,
                               borderRadius: BorderRadius.circular(100),
-                              border:
-                                  Border.all(color: AppColors.hairline),
+                              border: Border.all(color: AppColors.hairline),
                             ),
                             child: Text(
                               CurrencyFormatter.formatRate(current),
@@ -201,13 +231,14 @@ class _NewAlertScreenState extends ConsumerState<NewAlertScreen> {
                         return Expanded(
                           child: Padding(
                             padding: EdgeInsets.only(
-                                right: c == 'above' ? 10 : 0),
+                              right: c == 'above' ? 10 : 0,
+                            ),
                             child: GestureDetector(
-                              onTap: () =>
-                                  setState(() => _condition = c),
+                              onTap: () => setState(() => _condition = c),
                               child: Container(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 14),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 14,
+                                ),
                                 decoration: BoxDecoration(
                                   color: on
                                       ? AppColors.goldGlow
@@ -220,8 +251,7 @@ class _NewAlertScreenState extends ConsumerState<NewAlertScreen> {
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Icon(
                                       c == 'above'
@@ -234,8 +264,7 @@ class _NewAlertScreenState extends ConsumerState<NewAlertScreen> {
                                     ),
                                     const SizedBox(width: 8),
                                     Text(
-                                      c[0].toUpperCase() +
-                                          c.substring(1),
+                                      c[0].toUpperCase() + c.substring(1),
                                       style: TextStyle(
                                         fontSize: 13,
                                         letterSpacing: 0.52,
@@ -281,7 +310,8 @@ class _NewAlertScreenState extends ConsumerState<NewAlertScreen> {
                               controller: _targetCtrl,
                               keyboardType:
                                   const TextInputType.numberWithOptions(
-                                      decimal: true),
+                                    decimal: true,
+                                  ),
                               onChanged: (v) {
                                 final n = double.tryParse(v);
                                 if (n != null) {
@@ -305,7 +335,9 @@ class _NewAlertScreenState extends ConsumerState<NewAlertScreen> {
                           Text(
                             _to,
                             style: const TextStyle(
-                                fontSize: 13, color: AppColors.ink3),
+                              fontSize: 13,
+                              color: AppColors.ink3,
+                            ),
                           ),
                         ],
                       ),
@@ -315,13 +347,14 @@ class _NewAlertScreenState extends ConsumerState<NewAlertScreen> {
                     RichText(
                       text: TextSpan(
                         style: const TextStyle(
-                            fontSize: 12, color: AppColors.ink3),
+                          fontSize: 12,
+                          color: AppColors.ink3,
+                        ),
                         children: [
                           const TextSpan(text: 'Current is '),
                           TextSpan(
                             text: CurrencyFormatter.formatRate(current),
-                            style:
-                                const TextStyle(color: AppColors.gold),
+                            style: const TextStyle(color: AppColors.gold),
                           ),
                           TextSpan(
                             text:

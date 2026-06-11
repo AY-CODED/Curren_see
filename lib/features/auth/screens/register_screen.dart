@@ -21,6 +21,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _nameCtrl = TextEditingController();
   final _emailCtrl = TextEditingController();
   final _passwordCtrl = TextEditingController();
+  final _scrollCtrl = ScrollController(); // ← added
   String _defaultCurrency = 'USD';
   bool _loading = false;
   String? _error;
@@ -30,48 +31,73 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     _nameCtrl.dispose();
     _emailCtrl.dispose();
     _passwordCtrl.dispose();
+    _scrollCtrl.dispose(); // ← added
     super.dispose();
   }
 
   Future<void> _register() async {
-    if (!_formKey.currentState!.validate()) return;
+  if (!_formKey.currentState!.validate()) return;
+
+  setState(() {
+    _loading = true;
+    _error = null;
+  });
+
+  try {
+    print('Register started');
+
+    final cred = await ref
+        .read(authServiceProvider)
+        .signUp(
+          email: _emailCtrl.text.trim(),
+          password: _passwordCtrl.text,
+        );
+
+    print('Auth successful');
+
+    if (cred.user == null) {
+      throw Exception("User creation failed");
+    }
+
+    final now = DateTime.now();
+
+    final user = AppUser(
+      uid: cred.user!.uid,
+      fullName: _nameCtrl.text.trim(),
+      email: _emailCtrl.text.trim(),
+      defaultBaseCurrency: _defaultCurrency,
+      lastBaseCurrency: _defaultCurrency,
+      lastTargetCurrency:
+          _defaultCurrency == 'EUR' ? 'USD' : 'EUR',
+      createdAt: now,
+      updatedAt: now,
+    );
+
+    print("Navigating now...");
+  
+    if (mounted) {
+      Navigator.pushReplacementNamed(context, '/register-success');
+    }
+
+    ref.read(firestoreServiceProvider).createUser(user);
+
+    print("Flow completed");
+  } catch (e) {
     setState(() {
-      _loading = true;
-      _error = null;
+      _error = _friendlyError(e.toString());
     });
 
-    try {
-      final cred = await ref.read(authServiceProvider).signUp(
-            email: _emailCtrl.text.trim(),
-            password: _passwordCtrl.text,
-          );
-
-      if (cred.user != null) {
-        final now = DateTime.now();
-        await ref.read(firestoreServiceProvider).createUser(
-              AppUser(
-                uid: cred.user!.uid,
-                fullName: _nameCtrl.text.trim(),
-                email: _emailCtrl.text.trim(),
-                defaultBaseCurrency: _defaultCurrency,
-                lastBaseCurrency: _defaultCurrency,
-                lastTargetCurrency: _defaultCurrency == 'EUR' ? 'USD' : 'EUR',
-                createdAt: now,
-                updatedAt: now,
-              ),
-            );
-      }
-
-      if (mounted) {
-        Navigator.of(context).pushReplacementNamed('/home');
-      }
-    } catch (e) {
-      setState(() {
-        _error = _friendlyError(e.toString());
-        _loading = false;
-      });
+    _scrollCtrl.animateTo(
+      0,
+      duration: const Duration(milliseconds: 350),
+      curve: Curves.easeOut,
+    );
+  } finally {
+    if (mounted) {
+      setState(() => _loading = false);
     }
   }
+}
 
   String _friendlyError(String error) {
     if (error.contains('email-already-in-use')) {
@@ -92,6 +118,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       backgroundColor: AppColors.bg,
       body: SafeArea(
         child: SingleChildScrollView(
+          controller: _scrollCtrl, // ← added
           padding: const EdgeInsets.fromLTRB(28, 20, 28, 24),
           child: Form(
             key: _formKey,
@@ -102,9 +129,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 Row(
                   children: [
                     GestureDetector(
-                      onTap: () => Navigator.of(context).pop(),
-                      child:
-                          const Icon(Icons.chevron_left, color: AppColors.ink2, size: 22),
+                      onTap: () =>
+                          Navigator.of(context).pushReplacementNamed('/home'),
+                      child: const Icon(
+                        Icons.chevron_left,
+                        color: AppColors.ink2,
+                        size: 22,
+                      ),
                     ),
                     const SizedBox(width: 10),
                     const CSLogo(size: 18),
@@ -161,12 +192,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       color: AppColors.negativeSoft,
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
-                          color: AppColors.negative.withValues(alpha: 0.3)),
+                        color: AppColors.negative.withValues(alpha: 0.3),
+                      ),
                     ),
                     child: Text(
                       _error!,
                       style: const TextStyle(
-                          color: AppColors.negative, fontSize: 13),
+                        color: AppColors.negative,
+                        fontSize: 13,
+                      ),
                     ),
                   ),
 
@@ -216,13 +250,17 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       onTap: () => setState(() => _defaultCurrency = code),
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 14, vertical: 10),
+                          horizontal: 14,
+                          vertical: 10,
+                        ),
                         decoration: BoxDecoration(
-                          color:
-                              selected ? AppColors.goldGlow : AppColors.surface,
+                          color: selected
+                              ? AppColors.goldGlow
+                              : AppColors.surface,
                           border: Border.all(
-                            color:
-                                selected ? AppColors.gold : AppColors.hairline,
+                            color: selected
+                                ? AppColors.gold
+                                : AppColors.hairline,
                           ),
                           borderRadius: BorderRadius.circular(100),
                         ),
@@ -236,8 +274,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                               style: TextStyle(
                                 fontSize: 12,
                                 letterSpacing: 0.48,
-                                color:
-                                    selected ? AppColors.gold : AppColors.ink,
+                                color: selected
+                                    ? AppColors.gold
+                                    : AppColors.ink,
                               ),
                             ),
                           ],
@@ -254,6 +293,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   icon: Icons.arrow_forward_ios_rounded,
                   onPressed: _register,
                   isLoading: _loading,
+                  
                 ),
 
                 const SizedBox(height: 14),

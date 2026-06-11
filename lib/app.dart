@@ -4,12 +4,16 @@ import 'features/auth/screens/splash_screen.dart';
 import 'features/auth/screens/onboarding_screen.dart';
 import 'features/auth/screens/login_screen.dart';
 import 'features/auth/screens/register_screen.dart';
+import 'features/auth/screens/register_success_screen.dart';
 import 'features/auth/screens/forgot_password_screen.dart';
 import 'features/home/screens/home_screen.dart';
 import 'features/converter/screens/currency_picker_screen.dart';
 import 'features/help/screens/help_screen.dart';
 import 'features/feedback/screens/feedback_screen.dart';
 import 'features/alerts/screens/new_alert_screen.dart';
+import 'features/alerts/screens/alert_success_screen.dart';
+import 'features/alerts/screens/alerts_screen.dart';
+
 
 class CurrenSeeApp extends StatelessWidget {
   const CurrenSeeApp({super.key});
@@ -39,12 +43,18 @@ class CurrenSeeApp extends StatelessWidget {
       case '/register':
         return MaterialPageRoute(builder: (_) => const RegisterScreen());
 
+      case '/register-success':
+        return MaterialPageRoute(builder: (_) => const RegisterSuccessScreen());
+
       case '/forgot-password':
-        return MaterialPageRoute(
-            builder: (_) => const ForgotPasswordScreen());
+        return MaterialPageRoute(builder: (_) => const ForgotPasswordScreen());
 
       case '/home':
-        return MaterialPageRoute(builder: (_) => const HomeScreen());
+        final homeArgs = settings.arguments as Map<String, dynamic>? ?? {};
+        return MaterialPageRoute(
+          builder: (_) =>
+              HomeScreen(initialIndex: homeArgs['initialIndex'] as int? ?? 0),
+        );
 
       case '/currency-picker':
         final args = settings.arguments as Map<String, dynamic>? ?? {};
@@ -65,8 +75,12 @@ class CurrenSeeApp extends StatelessWidget {
       case '/new-alert':
         return MaterialPageRoute(builder: (_) => const NewAlertScreen());
 
+      case '/alert-success':
+        return MaterialPageRoute(builder: (_) => const AlertSuccessScreen());
+
       case '/alerts':
-        return MaterialPageRoute(builder: (_) => const HomeScreen());
+        return MaterialPageRoute(builder: (_) => const AlertsScreen());
+
 
       default:
         return MaterialPageRoute(builder: (_) => const SplashScreen());
